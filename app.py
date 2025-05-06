@@ -23,7 +23,9 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 load_dotenv()
 
 # Configure Gemini API
-GEMINI_API_KEY = "AIzaSyBikSLfMbXDxS7a2cEmmR3b6aLxGuWLjco"  # Direct API key for local development
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY environment variable is not set")
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-2.0-flash')
 
