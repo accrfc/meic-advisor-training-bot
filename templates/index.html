@@ -92,7 +92,7 @@
         }
         .feedback-container {
             display: none;
-            padding: 20px;
+            padding: 40px;
             background: white;
             border-radius: 10px;
             margin: 20px auto;
@@ -100,13 +100,19 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .score-section {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+        .score-section h3 {
+            color: rgb(151, 65, 146);
+            margin-bottom: 15px;
+            font-size: 1.2em;
         }
         .score-bar {
             height: 20px;
             background-color: #e9ecef;
             border-radius: 10px;
-            margin: 5px 0;
+            margin: 10px 0;
             overflow: hidden;
         }
         .score-fill {
@@ -115,10 +121,17 @@
             transition: width 0.3s ease;
         }
         .feedback-text {
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 15px;
+            padding: 15px;
             background-color: #f8f9fa;
             border-radius: 5px;
+            line-height: 1.5;
+        }
+        .feedback-content h2 {
+            color: rgb(151, 65, 146);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.8em;
         }
         .loading-message {
             text-align: center;
@@ -127,16 +140,17 @@
             color: #666;
         }
         #save-chat-btn {
-            margin-top: 20px;
+            margin: 0 auto 30px auto;
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: rgb(151, 65, 146);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            display: block;
         }
         #save-chat-btn:hover {
-            background-color: #45a049;
+            background-color: rgb(131, 45, 126);
         }
     </style>
 </head>
@@ -160,6 +174,7 @@
         </div>
         <div class="feedback-content">
             <h2>Chat Feedback</h2>
+            <button id="save-chat-btn" class="btn">Save Chat as PDF</button>
             <div class="score-section">
                 <h3>Tone of Voice</h3>
                 <div class="score-bar">
@@ -195,7 +210,6 @@
                 </div>
                 <p id="overall-feedback"></p>
             </div>
-            <button id="save-chat-btn" class="btn">Save Chat as PDF</button>
         </div>
     </div>
 
