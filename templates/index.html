@@ -139,18 +139,34 @@
             font-size: 1.2em;
             color: #666;
         }
-        #save-chat-btn {
-            margin: 0 auto 30px auto;
+        #save-chat-btn, #new-chat-btn {
+            margin: 0 10px 30px 10px;
             padding: 10px 20px;
             background-color: rgb(151, 65, 146);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            display: block;
+            display: inline-block;
         }
-        #save-chat-btn:hover {
+        #save-chat-btn:hover, #new-chat-btn:hover {
             background-color: rgb(131, 45, 126);
+        }
+        .button-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .feedback-summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .feedback-summary h3 {
+            color: rgb(151, 65, 146);
+            margin-bottom: 15px;
+            font-size: 1.2em;
         }
     </style>
 </head>
@@ -174,7 +190,29 @@
         </div>
         <div class="feedback-content">
             <h2>Chat Feedback</h2>
-            <button id="save-chat-btn" class="btn">Save Chat as PDF</button>
+            <div class="button-container">
+                <button id="save-chat-btn" class="btn">Save Chat as PDF</button>
+                <button id="new-chat-btn" class="btn">New Chat</button>
+            </div>
+            
+            <div class="feedback-summary">
+                <h3>Conversation Summary</h3>
+                <p id="conversation-summary"></p>
+            </div>
+            
+            <div class="feedback-summary">
+                <h3>About Young Person</h3>
+                <div id="persona-details" style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                    <p><strong>Age:</strong> <span id="persona-age"></span></p>
+                    <p><strong>Gender:</strong> <span id="persona-gender"></span></p>
+                    <p><strong>Location:</strong> <span id="persona-location"></span></p>
+                    <p><strong>Education:</strong> <span id="persona-education"></span></p>
+                    <p><strong>Welsh Background:</strong> <span id="persona-welsh"></span></p>
+                    <p><strong>Issue:</strong> <span id="persona-issue"></span></p>
+                    <p><strong>Desired Outcome:</strong> <span id="persona-outcome"></span></p>
+                </div>
+            </div>
+            
             <div class="score-section">
                 <h3>Tone of Voice</h3>
                 <div class="score-bar">
@@ -290,6 +328,20 @@
                 document.querySelector('.feedback-content').style.display = 'block';
                 
                 // Update scores and feedback
+                document.getElementById('conversation-summary').textContent = data.conversation_summary;
+                
+                // Update persona details
+                const persona = data.persona;
+                if (persona) {
+                    document.getElementById('persona-age').textContent = persona.age;
+                    document.getElementById('persona-gender').textContent = persona.gender.identity;
+                    document.getElementById('persona-location').textContent = persona.location;
+                    document.getElementById('persona-education').textContent = persona.education.details;
+                    document.getElementById('persona-welsh').textContent = `${persona.welsh_family}, attends a ${persona.welsh_school}, interested in ${persona.welsh_interest}`;
+                    document.getElementById('persona-issue').textContent = persona.issue;
+                    document.getElementById('persona-outcome').textContent = persona.outcome;
+                }
+                
                 document.getElementById('tone-score').style.width = data.tone.score + '%';
                 document.getElementById('tone-feedback').textContent = data.tone.feedback;
                 
@@ -319,24 +371,36 @@
             }));
             
             const feedback = {
+                conversation_summary: document.getElementById('conversation-summary').textContent,
+                persona: {
+                    age: document.getElementById('persona-age').textContent,
+                    gender: { identity: document.getElementById('persona-gender').textContent },
+                    location: document.getElementById('persona-location').textContent,
+                    education: { details: document.getElementById('persona-education').textContent },
+                    welsh_family: document.getElementById('persona-welsh').textContent.split(',')[0].replace('Welsh Background: ', ''),
+                    welsh_school: document.getElementById('persona-welsh').textContent.split(',')[1].replace(' attends a ', ''),
+                    welsh_interest: document.getElementById('persona-welsh').textContent.split(',')[2].replace(' interested in ', ''),
+                    issue: document.getElementById('persona-issue').textContent.replace('Issue: ', ''),
+                    outcome: document.getElementById('persona-outcome').textContent.replace('Desired Outcome: ', '')
+                },
                 tone: {
-                    score: document.getElementById('tone-score').style.width,
+                    score: parseInt(document.getElementById('tone-score').style.width),
                     feedback: document.getElementById('tone-feedback').textContent
                 },
                 engagement: {
-                    score: document.getElementById('engagement-score').style.width,
+                    score: parseInt(document.getElementById('engagement-score').style.width),
                     feedback: document.getElementById('engagement-feedback').textContent
                 },
                 resolution: {
-                    score: document.getElementById('resolution-score').style.width,
+                    score: parseInt(document.getElementById('resolution-score').style.width),
                     feedback: document.getElementById('resolution-feedback').textContent
                 },
                 information: {
-                    score: document.getElementById('information-score').style.width,
+                    score: parseInt(document.getElementById('information-score').style.width),
                     feedback: document.getElementById('information-feedback').textContent
                 },
                 overall: {
-                    score: document.getElementById('overall-score').style.width,
+                    score: parseInt(document.getElementById('overall-score').style.width),
                     feedback: document.getElementById('overall-feedback').textContent
                 }
             };
@@ -363,6 +427,25 @@
                 console.error('Error:', error);
                 alert('An error occurred while saving the chat.');
             });
+        });
+
+        // Add new chat functionality
+        document.getElementById('new-chat-btn').addEventListener('click', function() {
+            // Clear chat messages
+            chatMessages.innerHTML = '';
+            conversationHistory = [];
+            
+            // Hide feedback container
+            feedbackContainer.style.display = 'none';
+            
+            // Show chat container
+            document.querySelector('.chat-container').style.display = 'flex';
+            
+            // Clear input
+            userInput.value = '';
+            
+            // Refresh the page to get a new persona
+            window.location.reload();
         });
 
         function addMessage(text, sender) {

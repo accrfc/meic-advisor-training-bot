@@ -9,6 +9,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from io import BytesIO
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Required for session
@@ -22,9 +23,7 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 load_dotenv()
 
 # Configure Gemini API
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-if not GEMINI_API_KEY:
-    raise ValueError("No GEMINI_API_KEY found in environment variables")
+GEMINI_API_KEY = "AIzaSyBikSLfMbXDxS7a2cEmmR3b6aLxGuWLjco"  # Direct API key for local development
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-2.0-flash')
 
@@ -329,7 +328,12 @@ def analyze_conversation(conversation, persona):
     analysis_prompt = f"""Analyze this conversation between a Meic Cymru helpline advisor and a {persona['age']} year old {persona['gender']['identity']} from {persona['location']} 
 who is contacting about an issue related to {persona['theme']}.
 
-Evaluate the advisor's performance in these areas:
+First, provide a brief summary of the conversation in 2-3 sentences.
+
+Then, provide information about the young person in this format:
+ABOUT_YOUNG_PERSON: [Include age, gender, location, education, Welsh background, and the specific issue they were dealing with]
+
+Then evaluate the advisor's performance in these areas:
 
 1. Tone of Voice (0-100):
 - Was the advisor friendly and approachable?
@@ -363,6 +367,10 @@ Conversation:
 {format_conversation(conversation)}
 
 Provide your analysis in this exact format:
+CONVERSATION_SUMMARY: [2-3 sentence summary]
+
+ABOUT_YOUNG_PERSON: [Details about the young person]
+
 TONE_SCORE: [number]
 TONE_FEEDBACK: [feedback]
 
@@ -394,6 +402,8 @@ def format_conversation(conversation):
 
 def parse_analysis(analysis_text):
     scores = {
+        'conversation_summary': '',
+        'about_young_person': '',
         'tone': {'score': 0, 'feedback': ''},
         'engagement': {'score': 0, 'feedback': ''},
         'resolution': {'score': 0, 'feedback': ''},
@@ -404,7 +414,11 @@ def parse_analysis(analysis_text):
     current_section = None
     for line in analysis_text.split('\n'):
         line = line.strip()
-        if line.startswith('TONE_SCORE:'):
+        if line.startswith('CONVERSATION_SUMMARY:'):
+            scores['conversation_summary'] = line.split(':', 1)[1].strip()
+        elif line.startswith('ABOUT_YOUNG_PERSON:'):
+            scores['about_young_person'] = line.split(':', 1)[1].strip()
+        elif line.startswith('TONE_SCORE:'):
             scores['tone']['score'] = int(line.split(':')[1].strip())
         elif line.startswith('TONE_FEEDBACK:'):
             scores['tone']['feedback'] = line.split(':', 1)[1].strip()
@@ -442,86 +456,160 @@ def end_chat():
         if not feedback:
             return jsonify({'error': 'Failed to analyze conversation'}), 500
             
+        # Add persona information to the response
+        feedback['persona'] = persona
+            
         return jsonify(feedback)
     except Exception as e:
         print(f"Error in end-chat: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 def create_pdf(conversation, feedback):
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter)
-    styles = getSampleStyleSheet()
-    story = []
-    
-    # Add title
-    title_style = ParagraphStyle(
-        'CustomTitle',
-        parent=styles['Heading1'],
-        fontSize=16,
-        spaceAfter=30
-    )
-    story.append(Paragraph("Chat Conversation and Feedback", title_style))
-    
-    # Add conversation
-    story.append(Paragraph("Conversation:", styles['Heading2']))
-    story.append(Spacer(1, 12))
-    
-    # Create conversation table
-    conv_data = [['Role', 'Message']]
-    for msg in conversation:
-        conv_data.append([msg['role'], msg['content']])
-    
-    conv_table = Table(conv_data, colWidths=[1.5*inch, 4.5*inch])
-    conv_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
-    story.append(conv_table)
-    story.append(Spacer(1, 20))
-    
-    # Add feedback
-    story.append(Paragraph("Feedback:", styles['Heading2']))
-    story.append(Spacer(1, 12))
-    
-    # Create feedback table
-    feedback_data = [
-        ['Category', 'Score', 'Feedback'],
-        ['Tone of Voice', feedback['tone']['score'], feedback['tone']['feedback']],
-        ['Engagement', feedback['engagement']['score'], feedback['engagement']['feedback']],
-        ['Resolution', feedback['resolution']['score'], feedback['resolution']['feedback']],
-        ['Information Provided', feedback['information']['score'], feedback['information']['feedback']],
-        ['Overall', feedback['overall']['score'], feedback['overall']['feedback']]
-    ]
-    
-    feedback_table = Table(feedback_data, colWidths=[2*inch, 1*inch, 3*inch])
-    feedback_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black)
-    ]))
-    story.append(feedback_table)
-    
-    # Build PDF
-    doc.build(story)
-    buffer.seek(0)
-    return buffer
+    try:
+        buffer = BytesIO()
+        # Add margins to the document
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            leftMargin=50,
+            rightMargin=50,
+            topMargin=50,
+            bottomMargin=50
+        )
+        styles = getSampleStyleSheet()
+        story = []
+        
+        # Get current date and time
+        current_datetime = datetime.now().strftime("%d %B %Y, %H:%M")
+        
+        # Define custom colors
+        meic_purple = colors.Color(151/255, 65/255, 146/255)
+        
+        # Add title with date and time
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=16,
+            textColor=meic_purple,
+            spaceAfter=10
+        )
+        subtitle_style = ParagraphStyle(
+            'CustomSubtitle',
+            parent=styles['Normal'],
+            fontSize=12,
+            textColor=colors.grey,
+            spaceAfter=30
+        )
+        
+        # Add section heading style
+        section_style = ParagraphStyle(
+            'SectionHeading',
+            parent=styles['Heading2'],
+            fontSize=14,
+            textColor=meic_purple,
+            spaceAfter=12
+        )
+        
+        story.append(Paragraph("Chat Conversation and Feedback", title_style))
+        story.append(Paragraph(f"Generated on: {current_datetime}", subtitle_style))
+        
+        # Add conversation summary
+        story.append(Paragraph("Conversation Summary:", section_style))
+        story.append(Paragraph(feedback.get('conversation_summary', ''), styles['Normal']))
+        story.append(Spacer(1, 20))
+        
+        # Add persona details
+        story.append(Paragraph("About Young Person:", section_style))
+        persona = feedback.get('persona', {})
+        if persona:
+            persona_details = [
+                f"Age: {persona.get('age', '')}",
+                f"Gender: {persona.get('gender', {}).get('identity', '')}",
+                f"Location: {persona.get('location', '')}",
+                f"Education: {persona.get('education', {}).get('details', '')}",
+                f"Welsh Background: {persona.get('welsh_family', '')}, attends a {persona.get('welsh_school', '')}, interested in {persona.get('welsh_interest', '')}",
+                f"Issue: {persona.get('issue', '')}",
+                f"Desired Outcome: {persona.get('outcome', '')}"
+            ]
+            for detail in persona_details:
+                story.append(Paragraph(detail, styles['Normal']))
+        story.append(Spacer(1, 20))
+        
+        # Add conversation
+        story.append(Paragraph("Conversation:", section_style))
+        story.append(Spacer(1, 12))
+        
+        # Create conversation table with wrapped text
+        conv_data = [['Role', 'Message']]
+        for msg in conversation:
+            # Convert message content to Paragraph for word wrapping
+            wrapped_content = Paragraph(msg['content'], styles['Normal'])
+            conv_data.append([msg['role'], wrapped_content])
+        
+        conv_table = Table(conv_data, colWidths=[1.5*inch, 4.5*inch])
+        conv_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 6),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6)
+        ]))
+        story.append(conv_table)
+        story.append(Spacer(1, 20))
+        
+        # Add feedback
+        story.append(Paragraph("Feedback:", section_style))
+        story.append(Spacer(1, 12))
+        
+        # Create feedback table with wrapped text
+        feedback_data = [
+            ['Category', 'Score', 'Feedback'],
+            ['Tone of Voice', feedback['tone']['score'], Paragraph(feedback['tone']['feedback'], styles['Normal'])],
+            ['Engagement', feedback['engagement']['score'], Paragraph(feedback['engagement']['feedback'], styles['Normal'])],
+            ['Resolution', feedback['resolution']['score'], Paragraph(feedback['resolution']['feedback'], styles['Normal'])],
+            ['Information Provided', feedback['information']['score'], Paragraph(feedback['information']['feedback'], styles['Normal'])],
+            ['Overall', feedback['overall']['score'], Paragraph(feedback['overall']['feedback'], styles['Normal'])]
+        ]
+        
+        feedback_table = Table(feedback_data, colWidths=[2*inch, 1*inch, 3*inch])
+        feedback_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 6),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6)
+        ]))
+        story.append(feedback_table)
+        
+        # Build PDF
+        doc.build(story)
+        buffer.seek(0)
+        return buffer
+    except Exception as e:
+        print(f"Error in create_pdf: {str(e)}")
+        raise
 
 @app.route('/save-chat', methods=['POST'])
 def save_chat():
@@ -536,12 +624,16 @@ def save_chat():
         # Create PDF
         pdf_buffer = create_pdf(conversation, feedback)
         
+        # Generate filename with date and time
+        current_datetime = datetime.now().strftime("%d-%m-%Y_%H-%M")
+        filename = f"Meic-Training-Chat-{current_datetime}.pdf"
+        
         # Return PDF as download
         return send_file(
             pdf_buffer,
             mimetype='application/pdf',
             as_attachment=True,
-            download_name='chat-feedback.pdf'
+            download_name=filename
         )
     except Exception as e:
         print(f"Error generating PDF: {str(e)}")
