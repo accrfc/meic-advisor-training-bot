@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Chatbot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .chat-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+        .input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #dee2e6;
+        }
+        .input-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            background-color: #e9ecef;
+            color: #212529;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        .end-chat-btn {
+            background-color: #dc3545;
+            margin-left: auto;
+        }
+        .end-chat-btn:hover {
+            background-color: #c82333;
+        }
+        .feedback-container {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .score-section {
+            margin-bottom: 20px;
+        }
+        .score-bar {
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+        .score-fill {
+            height: 100%;
+            background-color: #28a745;
+            transition: width 0.3s ease;
+        }
+        .feedback-text {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .loading-message {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        #save-chat-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #save-chat-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+            <!-- Removed default greeting message -->
+        </div>
+        <div class="input-container">
+            <form class="input-form" id="chat-form">
+                <input type="text" id="user-input" placeholder="Type your message here..." required>
+                <button type="submit">Send</button>
+                <button class="end-chat-btn" id="end-chat-btn">End Chat</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="feedback-container" style="display: none;">
+        <div class="loading-message" style="display: none;">
+            <p>Processing your chat and generating feedback...</p>
+        </div>
+        <div class="feedback-content">
+            <h2>Chat Feedback</h2>
+            <div class="score-section">
+                <h3>Tone of Voice</h3>
+                <div class="score-bar">
+                    <div class="score-fill" id="tone-score"></div>
+                </div>
+                <p id="tone-feedback"></p>
+            </div>
+            <div class="score-section">
+                <h3>Engagement</h3>
+                <div class="score-bar">
+                    <div class="score-fill" id="engagement-score"></div>
+                </div>
+                <p id="engagement-feedback"></p>
+            </div>
+            <div class="score-section">
+                <h3>Resolution</h3>
+                <div class="score-bar">
+                    <div class="score-fill" id="resolution-score"></div>
+                </div>
+                <p id="resolution-feedback"></p>
+            </div>
+            <div class="score-section">
+                <h3>Information Provided</h3>
+                <div class="score-bar">
+                    <div class="score-fill" id="information-score"></div>
+                </div>
+                <p id="information-feedback"></p>
+            </div>
+            <div class="score-section">
+                <h3>Overall Score</h3>
+                <div class="score-bar">
+                    <div class="score-fill" id="overall-score"></div>
+                </div>
+                <p id="overall-feedback"></p>
+            </div>
+            <button id="save-chat-btn" class="btn">Save Chat as PDF</button>
+        </div>
+    </div>
+
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const endChatBtn = document.getElementById('end-chat-btn');
+        const feedbackContainer = document.getElementById('feedback-container');
+        let conversationHistory = [];
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            conversationHistory.push({ role: 'user', content: message });
+            userInput.value = '';
+
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message bot-message typing-indicator';
+            typingIndicator.textContent = 'Typing...';
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message }),
+                });
+
+                const data = await response.json();
+                
+                // Remove typing indicator
+                typingIndicator.remove();
+
+                if (data.error) {
+                    addMessage(`Error: ${data.error}`, 'bot');
+                } else {
+                    addMessage(data.response, 'bot');
+                    conversationHistory.push({ role: 'bot', content: data.response });
+                }
+            } catch (error) {
+                typingIndicator.remove();
+                addMessage('Sorry, there was an error connecting to the server.', 'bot');
+            }
+        });
+
+        endChatBtn.addEventListener('click', function() {
+            const conversation = Array.from(document.querySelectorAll('.message')).map(msg => ({
+                role: msg.classList.contains('user-message') ? 'user' : 'assistant',
+                content: msg.textContent.trim()
+            }));
+            
+            // Show loading message
+            document.querySelector('.loading-message').style.display = 'block';
+            document.querySelector('.feedback-content').style.display = 'none';
+            document.getElementById('feedback-container').style.display = 'block';
+            
+            fetch('/end-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ conversation })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading message and show feedback
+                document.querySelector('.loading-message').style.display = 'none';
+                document.querySelector('.feedback-content').style.display = 'block';
+                
+                // Update scores and feedback
+                document.getElementById('tone-score').style.width = data.tone.score + '%';
+                document.getElementById('tone-feedback').textContent = data.tone.feedback;
+                
+                document.getElementById('engagement-score').style.width = data.engagement.score + '%';
+                document.getElementById('engagement-feedback').textContent = data.engagement.feedback;
+                
+                document.getElementById('resolution-score').style.width = data.resolution.score + '%';
+                document.getElementById('resolution-feedback').textContent = data.resolution.feedback;
+                
+                document.getElementById('information-score').style.width = data.information.score + '%';
+                document.getElementById('information-feedback').textContent = data.information.feedback;
+                
+                document.getElementById('overall-score').style.width = data.overall.score + '%';
+                document.getElementById('overall-feedback').textContent = data.overall.feedback;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing the chat.');
+            });
+        });
+
+        // Add PDF download functionality
+        document.getElementById('save-chat-btn').addEventListener('click', function() {
+            const conversation = Array.from(document.querySelectorAll('.message')).map(msg => ({
+                role: msg.classList.contains('user-message') ? 'Advisor' : 'Young Person',
+                content: msg.textContent.trim()
+            }));
+            
+            const feedback = {
+                tone: {
+                    score: document.getElementById('tone-score').style.width,
+                    feedback: document.getElementById('tone-feedback').textContent
+                },
+                engagement: {
+                    score: document.getElementById('engagement-score').style.width,
+                    feedback: document.getElementById('engagement-feedback').textContent
+                },
+                resolution: {
+                    score: document.getElementById('resolution-score').style.width,
+                    feedback: document.getElementById('resolution-feedback').textContent
+                },
+                information: {
+                    score: document.getElementById('information-score').style.width,
+                    feedback: document.getElementById('information-feedback').textContent
+                },
+                overall: {
+                    score: document.getElementById('overall-score').style.width,
+                    feedback: document.getElementById('overall-feedback').textContent
+                }
+            };
+            
+            fetch('/save-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ conversation, feedback })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'chat-feedback.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the chat.');
+            });
+        });
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+</body>
+</html> 
