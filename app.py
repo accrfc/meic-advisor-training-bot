@@ -32,174 +32,389 @@ THEMES = {
     "money": [
         {
             "issue": "struggling with bills at home",
-            "outcome": "get help with budgeting and find ways to reduce household expenses"
+            "outcome": "get help with budgeting and find ways to reduce household expenses",
+            "details": "Parents are working multiple jobs but still struggling to make ends meet. Worried about having to move schools if we can't afford the rent."
         },
         {
             "issue": "can't afford school trips",
-            "outcome": "find funding options or alternative ways to participate in school activities"
+            "outcome": "find funding options or alternative ways to participate in school activities",
+            "details": "All my friends are going on the school trip to France but my family can't afford it. Feeling left out and embarrassed."
         },
         {
             "issue": "worried about family's financial situation",
-            "outcome": "get advice on how to support my family and manage my own finances"
+            "outcome": "get advice on how to support my family and manage my own finances",
+            "details": "Parents are arguing about money all the time. I want to help but don't know how. Thinking about getting a part-time job."
+        },
+        {
+            "issue": "pressure to buy expensive things",
+            "outcome": "learn how to handle peer pressure and make responsible financial decisions",
+            "details": "Friends all have the latest phones and clothes. Feeling pressured to keep up but know my family can't afford it."
         }
     ],
     "relationships": [
         {
             "issue": "problems with friends at school",
-            "outcome": "learn how to handle conflicts and rebuild friendships"
+            "outcome": "learn how to handle conflicts and rebuild friendships",
+            "details": "My best friend has started hanging out with a new group and is ignoring me. Feeling hurt and lonely."
         },
         {
             "issue": "family arguments at home",
-            "outcome": "find ways to communicate better with my family and reduce arguments"
+            "outcome": "find ways to communicate better with my family and reduce arguments",
+            "details": "Constant arguments with parents about my future choices. They want me to go to university but I'm not sure."
         },
         {
             "issue": "feeling left out of social groups",
-            "outcome": "build confidence to make new friends and feel included"
+            "outcome": "build confidence to make new friends and feel included",
+            "details": "Moved to a new school and finding it hard to make friends. Everyone seems to have their own groups already."
+        },
+        {
+            "issue": "romantic relationship problems",
+            "outcome": "get advice on healthy relationships and boundaries",
+            "details": "First serious relationship and not sure if it's healthy. Partner is very controlling of who I can see."
+        },
+        {
+            "issue": "online friendship issues",
+            "outcome": "learn how to maintain healthy online relationships and set boundaries",
+            "details": "Made friends online but they're pressuring me to share personal information and photos."
         }
     ],
     "mental health": [
         {
             "issue": "feeling really anxious lately",
-            "outcome": "learn coping strategies and find ways to manage my anxiety"
+            "outcome": "learn coping strategies and find ways to manage my anxiety",
+            "details": "Getting panic attacks before exams and social situations. Can't sleep properly and always worrying."
         },
         {
             "issue": "struggling with low mood",
-            "outcome": "get support and find activities that help improve my mood"
+            "outcome": "get support and find activities that help improve my mood",
+            "details": "Feeling down all the time, no energy to do things I used to enjoy. Friends are worried about me."
         },
         {
             "issue": "having panic attacks",
-            "outcome": "learn techniques to prevent and manage panic attacks"
+            "outcome": "learn techniques to prevent and manage panic attacks",
+            "details": "Started having panic attacks in crowded places. Scared to go to school or social events."
+        },
+        {
+            "issue": "stress about future",
+            "outcome": "develop strategies to manage stress and make decisions about the future",
+            "details": "Overwhelmed with pressure to choose a career path. Don't know what I want to do and everyone keeps asking."
+        },
+        {
+            "issue": "body image concerns",
+            "outcome": "build positive body image and develop healthy habits",
+            "details": "Feeling self-conscious about my appearance. Social media makes me feel worse about how I look."
         }
     ],
     "bullying": [
         {
             "issue": "being picked on at school",
-            "outcome": "get help to stop the bullying and feel safe at school"
+            "outcome": "get help to stop the bullying and feel safe at school",
+            "details": "Group of older students keep making fun of me and spreading rumors. Scared to tell teachers."
         },
         {
             "issue": "receiving mean messages online",
-            "outcome": "learn how to handle online bullying and protect my privacy"
+            "outcome": "learn how to handle online bullying and protect my privacy",
+            "details": "Getting anonymous messages on social media. They know personal things about me and I'm scared."
         },
         {
             "issue": "excluded from friendship groups",
-            "outcome": "find ways to rebuild friendships or make new friends"
+            "outcome": "find ways to rebuild friendships or make new friends",
+            "details": "Friends have started a group chat without me and are ignoring me at school. Don't know what I did wrong."
+        },
+        {
+            "issue": "cyberbullying in gaming",
+            "outcome": "learn how to handle toxic behavior in online gaming",
+            "details": "Getting harassed in online games. People are making threats and sharing my personal information."
+        },
+        {
+            "issue": "workplace bullying",
+            "outcome": "get advice on handling workplace harassment",
+            "details": "Older colleagues at my part-time job are making inappropriate comments and excluding me from tasks."
         }
     ],
     "family": [
         {
             "issue": "parents arguing a lot",
-            "outcome": "find ways to cope with family stress and improve home life"
+            "outcome": "find ways to cope with family stress and improve home life",
+            "details": "Parents fight constantly about money and other issues. Worried they might split up."
         },
         {
             "issue": "difficult relationship with step-parent",
-            "outcome": "build a better relationship with my step-parent"
+            "outcome": "build a better relationship with my step-parent",
+            "details": "New step-parent moved in and we don't get along. They're trying to parent me but I don't want them to."
         },
         {
             "issue": "feeling ignored at home",
-            "outcome": "get help to communicate better with my family"
+            "outcome": "get help to communicate better with my family",
+            "details": "Parents are always busy with work and my younger siblings. Feel like they don't have time for me."
+        },
+        {
+            "issue": "cultural differences with family",
+            "outcome": "bridge cultural gaps and maintain family relationships",
+            "details": "Parents want me to follow traditional values but I want to live more like my friends. Causing lots of arguments."
+        },
+        {
+            "issue": "caring for family members",
+            "outcome": "balance caring responsibilities with personal life",
+            "details": "Looking after my younger siblings while parents work. Missing out on school activities and social life."
         }
     ],
     "school": [
         {
             "issue": "falling behind in lessons",
-            "outcome": "get extra help with my studies and improve my grades"
+            "outcome": "get extra help with my studies and improve my grades",
+            "details": "Struggling to keep up with coursework. Teachers are putting pressure on me to do better."
         },
         {
             "issue": "problems with a teacher",
-            "outcome": "resolve conflicts with my teacher and improve our relationship"
+            "outcome": "resolve conflicts with my teacher and improve our relationship",
+            "details": "Teacher keeps picking on me and making negative comments. Other students notice and it's embarrassing."
         },
         {
             "issue": "finding exams stressful",
-            "outcome": "learn study techniques and ways to manage exam stress"
+            "outcome": "learn study techniques and ways to manage exam stress",
+            "details": "Panic during exams and can't remember what I've learned. Worried about failing my GCSEs."
+        },
+        {
+            "issue": "choosing subjects",
+            "outcome": "make informed decisions about subject choices",
+            "details": "Need to choose A-level subjects but not sure what I want to do. Parents have different ideas."
+        },
+        {
+            "issue": "school attendance problems",
+            "outcome": "address barriers to regular school attendance",
+            "details": "Missing lots of school due to anxiety. Getting letters about attendance and worried about consequences."
+        }
+    ],
+    "identity": [
+        {
+            "issue": "exploring gender identity",
+            "outcome": "get support in understanding and expressing gender identity",
+            "details": "Questioning my gender identity but scared to talk to family. Friends are supportive but don't know how to help."
+        },
+        {
+            "issue": "coming out concerns",
+            "outcome": "navigate coming out process safely",
+            "details": "Want to come out to family but worried about their reaction. They make negative comments about LGBTQ+ people."
+        },
+        {
+            "issue": "cultural identity conflicts",
+            "outcome": "balance cultural heritage with personal identity",
+            "details": "Feeling torn between family's cultural expectations and wanting to fit in with friends at school."
+        },
+        {
+            "issue": "religious beliefs",
+            "outcome": "reconcile personal beliefs with family expectations",
+            "details": "Starting to question family's religious beliefs but scared to talk about it. Worried about being rejected."
+        }
+    ],
+    "health": [
+        {
+            "issue": "eating habits",
+            "outcome": "develop healthy relationship with food",
+            "details": "Struggling with irregular eating patterns. Sometimes skip meals, sometimes eat too much when stressed."
+        },
+        {
+            "issue": "sleep problems",
+            "outcome": "improve sleep habits and energy levels",
+            "details": "Can't sleep properly, always tired at school. Using phone late at night to avoid thinking about problems."
+        },
+        {
+            "issue": "physical health concerns",
+            "outcome": "address health concerns and access support",
+            "details": "Having unexplained symptoms but scared to tell parents. Worried it might be serious."
+        },
+        {
+            "issue": "substance use",
+            "outcome": "get support for reducing or stopping substance use",
+            "details": "Started using substances to cope with stress. Want to stop but finding it hard."
         }
     ]
 }
 
 LOCATIONS = [
     "Swansea", "Cardiff", "Newport", "Wrexham", "Bangor", "Aberystwyth",
-    "Carmarthen", "Merthyr Tydfil", "Rhyl", "Llanelli", "Porthmadog",
-    "Brecon", "Abergavenny", "Caernarfon", "Haverfordwest", 'Ponty', 'Merthyr', 'Ynysybwl', 'hay-on-wye'
+    "Carmarthen", "Rhyl", "Llanelli", "Porthmadog", "Aberdare", "Ebbw Vale",
+    "Brecon", "Abergavenny", "Caernarfon", "Haverfordwest", "Pontypridd", 
+    "Merthyr", "Ynysybwl", "Hay-on-Wye", "Llandrindod Wells", "Llanidloes",
+    "Aberdare", "Abercynon", "Aberkenfig", "Abertridwr", "Llandovery",
+    "Penarth", "Porthcawl", "Bridgend", "Tenby", "St. Clears", "St. Davids",
+    "Conwy", "Llandgollen", "Crickhowell", "Llandudno", "Chepstow", "Pontypool",
+    "Aberavon", "Aberdulais", "Aberfan", "Abercwmboi", "Neath", "Port Talbot", 
+    "Caernarfon", "Abergele", "Colwyn Bay", "Llanberis", "Harlech", "Portmeirion",
+    "Ruthin", "Machynlleth", "Dolgellau", "Holyhead", "Blaenau Ffestiniog", "Bala"
 ]
 
-# Welsh cultural elements
+# Enhanced Welsh cultural elements
 WELSH_REFERENCES = {
     "schools": [
         "Ysgol Gyfun", "Welsh-medium school", "English-medium school with Welsh lessons",
-        "bilingual school", "Eisteddfod participant", "Urdd member"
+        "bilingual school", "Eisteddfod participant", "Urdd member",
+        "Welsh language stream", "Welsh heritage school", "Welsh culture club member",
+        "Welsh literature student", "Welsh history enthusiast", "Welsh music group member"
     ],
     "interests": [
         "rugby", "football", "Welsh choir", "Welsh language learning",
         "traditional Welsh dancing", "Eisteddfod competitions", "Welsh literature",
-        "Welsh history", "local Welsh festivals"
+        "Welsh history", "local Welsh festivals", "Welsh folk music",
+        "Welsh art and crafts", "Welsh poetry", "Welsh mythology",
+        "Welsh sports", "Welsh cooking", "Welsh environmental projects",
+        "Welsh community events", "Welsh media", "Welsh politics",
+        "Welsh cultural heritage"
     ],
     "family": [
         "Welsh-speaking family", "mixed language household", "first language Welsh",
         "learning Welsh as second language", "traditional Welsh family",
-        "modern Welsh family"
+        "modern Welsh family", "Welsh heritage family", "Welsh cultural family",
+        "Welsh community family", "Welsh diaspora family",
+        "Welsh-English bilingual family", "Welsh cultural traditions",
+        "Welsh family values", "Welsh family history"
+    ],
+    "communities": [
+        "Welsh language community", "Welsh cultural society", "Welsh youth group",
+        "Welsh sports club", "Welsh music group", "Welsh dance group",
+        "Welsh literature circle", "Welsh history society", "Welsh environmental group",
+        "Welsh community center", "Welsh cultural events", "Welsh heritage group"
     ]
 }
 
-# Communication styles
+# Youth interests (non-Welsh specific)
+YOUTH_INTERESTS = [
+    {
+        "category": "Digital & Online",
+        "interests": [
+            "gaming", "social media", "streaming content", "online influencers",
+            "memes & online humor", "podcasts", "photography & videography",
+            "digital art", "online communities", "virtual reality"
+        ]
+    },
+    {
+        "category": "Creative & Arts",
+        "interests": [
+            "music", "creative arts", "crafting & DIY", "reading", "writing",
+            "drawing", "painting", "digital design", "animation", "filmmaking"
+        ]
+    },
+    {
+        "category": "Physical & Social",
+        "interests": [
+            "sports & fitness", "fashion & style", "socializing", "dance",
+            "outdoor activities", "team sports", "individual sports", "fitness trends",
+            "street fashion", "makeup & beauty"
+        ]
+    },
+    {
+        "category": "Learning & Development",
+        "interests": [
+            "learning new skills", "travel & exploration", "mental wellbeing",
+            "social & environmental issues", "collecting", "cooking & baking",
+            "language learning", "coding & technology", "science experiments",
+            "history & culture"
+        ]
+    }
+]
+
+# Enhanced communication styles
 COMMUNICATION_STYLES = [
     {
         "style": "hesitant",
         "traits": "very brief messages, takes time to open up, needs encouragement",
-        "example": "hi... not sure if i should say this"
+        "example": "hi... not sure if i should say this",
+        "characteristics": ["shy", "uncertain", "needs reassurance", "careful with words"]
     },
     {
         "style": "quiet",
         "traits": "short, simple messages, may need prompting to share more",
-        "example": "i need help with something"
+        "example": "i need help with something",
+        "characteristics": ["reserved", "thoughtful", "observant", "prefers listening"]
     },
     {
         "style": "nervous",
         "traits": "brief messages with uncertainty, may use ellipses",
-        "example": "um... can i talk about something?"
+        "example": "um... can i talk about something?",
+        "characteristics": ["anxious", "worried", "seeks validation", "overthinks"]
     },
     {
         "style": "shy",
         "traits": "minimal responses, needs gentle encouragement",
-        "example": "yeah... it's hard to talk about"
+        "example": "yeah... it's hard to talk about",
+        "characteristics": ["introverted", "self-conscious", "needs time", "careful"]
     },
     {
         "style": "uncertain",
         "traits": "short messages with questions, unsure how to express themselves",
-        "example": "is this the right place to talk about... stuff?"
+        "example": "is this the right place to talk about... stuff?",
+        "characteristics": ["doubtful", "seeking guidance", "needs clarity", "cautious"]
+    },
+    {
+        "style": "direct",
+        "traits": "clear and straightforward, gets to the point",
+        "example": "I need help with bullying at school",
+        "characteristics": ["confident", "assertive", "practical", "solution-focused"]
+    },
+    {
+        "style": "emotional",
+        "traits": "expressive, shares feelings openly",
+        "example": "I'm really upset about what's happening",
+        "characteristics": ["sensitive", "expressive", "needs empathy", "open"]
+    },
+    {
+        "style": "formal",
+        "traits": "polite and structured, uses proper language",
+        "example": "I would like to discuss a personal matter",
+        "characteristics": ["respectful", "organized", "careful", "professional"]
     }
 ]
 
-# Gender identities
+# Enhanced gender identities
 GENDER_IDENTITIES = [
-    {"identity": "boy", "pronouns": "he/him"},
-    {"identity": "girl", "pronouns": "she/her"},
-    {"identity": "non-binary person", "pronouns": "they/them"},
-    {"identity": "trans boy", "pronouns": "he/him"},
-    {"identity": "trans girl", "pronouns": "she/her"},
-    {"identity": "genderfluid person", "pronouns": "they/them"},
-    {"identity": "agender person", "pronouns": "they/them"}
+    {"identity": "boy", "pronouns": "he/him", "characteristics": ["masculine", "male", "man"]},
+    {"identity": "girl", "pronouns": "she/her", "characteristics": ["feminine", "female", "woman"]},
+    {"identity": "non-binary person", "pronouns": "they/them", "characteristics": ["gender-neutral", "non-binary", "enby"]},
+    {"identity": "trans boy", "pronouns": "he/him", "characteristics": ["transmasculine", "trans male", "trans man"]},
+    {"identity": "trans girl", "pronouns": "she/her", "characteristics": ["transfeminine", "trans female", "trans woman"]},
+    {"identity": "genderfluid person", "pronouns": "they/them", "characteristics": ["fluid", "flexible", "changing"]},
+    {"identity": "agender person", "pronouns": "they/them", "characteristics": ["genderless", "neutral", "unaffiliated"]},
+    {"identity": "genderqueer person", "pronouns": "they/them", "characteristics": ["queer", "non-conforming", "unique"]}
 ]
 
-# School/college scenarios
+# Enhanced education scenarios
 EDUCATION_SCENARIOS = [
     {
         "type": "secondary_school",
         "details": "attending a local comprehensive school",
-        "challenges": ["exams", "homework", "school social life", "teachers"]
+        "challenges": ["exams", "homework", "school social life", "teachers"],
+        "characteristics": ["GCSE student", "teenager", "school-focused", "peer-oriented"]
     },
     {
         "type": "sixth_form",
         "details": "studying A-levels or equivalent",
-        "challenges": ["university applications", "increased workload", "future planning"]
+        "challenges": ["university applications", "increased workload", "future planning"],
+        "characteristics": ["post-16 student", "academic", "future-focused", "independent"]
     },
     {
         "type": "college",
         "details": "studying vocational courses",
-        "challenges": ["work placements", "practical skills", "career focus"]
+        "challenges": ["work placements", "practical skills", "career focus"],
+        "characteristics": ["vocational student", "hands-on", "career-oriented", "practical"]
     },
     {
         "type": "apprenticeship",
         "details": "combining work and study",
-        "challenges": ["work-life balance", "professional environment", "skill development"]
+        "challenges": ["work-life balance", "professional environment", "skill development"],
+        "characteristics": ["working student", "professional", "balanced", "developing"]
+    },
+    {
+        "type": "special_education",
+        "details": "attending a specialist school",
+        "challenges": ["learning support", "social integration", "individual needs"],
+        "characteristics": ["supported learning", "individualized", "inclusive", "focused"]
+    },
+    {
+        "type": "home_education",
+        "details": "learning at home",
+        "challenges": ["socialization", "structure", "resources"],
+        "characteristics": ["independent learner", "flexible", "self-directed", "family-oriented"]
     }
 ]
 
@@ -214,6 +429,11 @@ def generate_persona():
     welsh_school = random.choice(WELSH_REFERENCES["schools"])
     welsh_interest = random.choice(WELSH_REFERENCES["interests"])
     welsh_family = random.choice(WELSH_REFERENCES["family"])
+    welsh_community = random.choice(WELSH_REFERENCES["communities"])
+    
+    # Select random interest category and interest
+    interest_category = random.choice(YOUTH_INTERESTS)
+    youth_interest = random.choice(interest_category["interests"])
     
     return {
         "age": age,
@@ -222,11 +442,15 @@ def generate_persona():
         "theme": theme_category,
         "issue": scenario["issue"],
         "outcome": scenario["outcome"],
+        "details": scenario["details"],
         "communication": communication,
         "education": education,
         "welsh_school": welsh_school,
         "welsh_interest": welsh_interest,
-        "welsh_family": welsh_family
+        "welsh_family": welsh_family,
+        "welsh_community": welsh_community,
+        "youth_interest_category": interest_category["category"],
+        "youth_interest": youth_interest
     }
 
 def get_system_prompt(persona):
@@ -237,7 +461,8 @@ Background:
 - {persona['education']['details']}
 - From a {persona['welsh_family']}
 - Attends a {persona['welsh_school']}
-- Interested in {persona['welsh_interest']}
+- Interested in {persona['welsh_interest']} (Welsh culture)
+- Also interested in {persona['youth_interest']} ({persona['youth_interest_category']})
 
 Your situation:
 - You are experiencing: {persona['issue']}
