@@ -21,6 +21,8 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 # Load environment variables
 load_dotenv()
+print("Environment variables loaded")
+print(f"GEMINI_API_KEY present: {'GEMINI_API_KEY' in os.environ}")
 
 # Configure Gemini API
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
@@ -711,6 +713,7 @@ def create_pdf(conversation, feedback):
         
         # Define custom colors
         meic_purple = colors.Color(151/255, 65/255, 146/255)
+        meic_lavender = colors.Color(225/255, 164/255, 228/255)
         
         # Add title with date and time
         title_style = ParagraphStyle(
@@ -781,7 +784,7 @@ def create_pdf(conversation, feedback):
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 12),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('BACKGROUND', (0, 1), (-1, -1), meic_lavender),
             ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
             ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 1), (-1, -1), 10),
@@ -817,7 +820,7 @@ def create_pdf(conversation, feedback):
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 12),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('BACKGROUND', (0, 1), (-1, -1), meic_lavender),
             ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
             ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 1), (-1, -1), 10),

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: meic-advisor-training-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn flask_app:application
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+    healthCheckPath: /
+    autoDeploy: true 

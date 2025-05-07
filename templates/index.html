@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Chatbot</title>
+    <title>Meic Training Bot</title>
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: rgb(151, 65, 146);
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
         .chat-container {
             max-width: 1200px;
+            min-width: 1200px;
             margin: 20px auto;
             background: white;
             border-radius: 10px;
@@ -50,17 +52,27 @@
             background: white;
             border-top: 1px solid #dee2e6;
         }
-        .input-form {
+        .input-flex-row {
             display: flex;
-            gap: 10px;
-            align-items: center;
+            flex-direction: row;
+            align-items: flex-end;
+            gap: 16px;
         }
-        input[type="text"] {
+        .button-logo-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        textarea {
             flex: 1;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #dee2e6;
             border-radius: 5px;
             font-size: 16px;
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
         }
         button {
             padding: 10px 20px;
@@ -128,7 +140,7 @@
             line-height: 1.5;
         }
         .feedback-content h2 {
-            color: rgb(151, 65, 146);
+            color: #fff;
             margin-bottom: 30px;
             text-align: center;
             font-size: 1.8em;
@@ -142,15 +154,15 @@
         #save-chat-btn, #new-chat-btn {
             margin: 0 10px 30px 10px;
             padding: 10px 20px;
-            background-color: rgb(151, 65, 146);
-            color: white;
+            background-color: rgb(216, 219, 21);
+            color: #333;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             display: inline-block;
         }
         #save-chat-btn:hover, #new-chat-btn:hover {
-            background-color: rgb(131, 45, 126);
+            background-color: rgb(191, 194, 10);
         }
         .button-container {
             text-align: center;
@@ -168,6 +180,69 @@
             margin-bottom: 15px;
             font-size: 1.2em;
         }
+        .meic-logo {
+            position: static;
+            display: block;
+            margin: 8px auto 0 auto;
+            width: 90px;
+            z-index: 10;
+        }
+        .meic-logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .score-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        #persona-details {
+            margin-top: 15px;
+            font-size: 1em;
+            color: #212529;
+            font-family: inherit;
+        }
+        /* Modal overlay for loading */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.3);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+            text-align: center;
+            min-width: 300px;
+        }
+        .spinner {
+            border: 6px solid #eee;
+            border-top: 6px solid rgb(151, 65, 146);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -176,10 +251,13 @@
             <!-- Removed default greeting message -->
         </div>
         <div class="input-container">
-            <form class="input-form" id="chat-form">
-                <input type="text" id="user-input" placeholder="Type your message here..." required>
-                <button type="submit">Send</button>
-                <button class="end-chat-btn" id="end-chat-btn">End Chat</button>
+            <form class="input-flex-row" id="chat-form">
+                <textarea id="user-input" placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)" required></textarea>
+                <div class="button-logo-column">
+                    <button type="submit">Send</button>
+                    <button class="end-chat-btn" id="end-chat-btn">End Chat</button>
+                    <img src="/static/img/meic-logo.png" alt="Meic Logo" class="meic-logo">
+                </div>
             </form>
         </div>
     </div>
@@ -202,7 +280,7 @@
             
             <div class="feedback-summary">
                 <h3>About Young Person</h3>
-                <div id="persona-details" style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                <div id="persona-details">
                     <p><strong>Age:</strong> <span id="persona-age"></span></p>
                     <p><strong>Gender:</strong> <span id="persona-gender"></span></p>
                     <p><strong>Location:</strong> <span id="persona-location"></span></p>
@@ -213,41 +291,58 @@
                 </div>
             </div>
             
-            <div class="score-section">
-                <h3>Tone of Voice</h3>
-                <div class="score-bar">
-                    <div class="score-fill" id="tone-score"></div>
+            <div class="score-box">
+                <div class="score-section">
+                    <h3>Tone of Voice</h3>
+                    <div class="score-bar">
+                        <div class="score-fill" id="tone-score"></div>
+                    </div>
+                    <p id="tone-feedback"></p>
                 </div>
-                <p id="tone-feedback"></p>
             </div>
-            <div class="score-section">
-                <h3>Engagement</h3>
-                <div class="score-bar">
-                    <div class="score-fill" id="engagement-score"></div>
+            <div class="score-box">
+                <div class="score-section">
+                    <h3>Engagement</h3>
+                    <div class="score-bar">
+                        <div class="score-fill" id="engagement-score"></div>
+                    </div>
+                    <p id="engagement-feedback"></p>
                 </div>
-                <p id="engagement-feedback"></p>
             </div>
-            <div class="score-section">
-                <h3>Resolution</h3>
-                <div class="score-bar">
-                    <div class="score-fill" id="resolution-score"></div>
+            <div class="score-box">
+                <div class="score-section">
+                    <h3>Resolution</h3>
+                    <div class="score-bar">
+                        <div class="score-fill" id="resolution-score"></div>
+                    </div>
+                    <p id="resolution-feedback"></p>
                 </div>
-                <p id="resolution-feedback"></p>
             </div>
-            <div class="score-section">
-                <h3>Information Provided</h3>
-                <div class="score-bar">
-                    <div class="score-fill" id="information-score"></div>
+            <div class="score-box">
+                <div class="score-section">
+                    <h3>Information Provided</h3>
+                    <div class="score-bar">
+                        <div class="score-fill" id="information-score"></div>
+                    </div>
+                    <p id="information-feedback"></p>
                 </div>
-                <p id="information-feedback"></p>
             </div>
-            <div class="score-section">
-                <h3>Overall Score</h3>
-                <div class="score-bar">
-                    <div class="score-fill" id="overall-score"></div>
+            <div class="score-box">
+                <div class="score-section">
+                    <h3>Overall Score</h3>
+                    <div class="score-bar">
+                        <div class="score-fill" id="overall-score"></div>
+                    </div>
+                    <p id="overall-feedback"></p>
                 </div>
-                <p id="overall-feedback"></p>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loading-modal">
+        <div class="modal-content">
+            <div class="spinner"></div>
+            <div class="loading-message-modal">Processing your chat and generating feedback...</div>
         </div>
     </div>
 
@@ -258,6 +353,20 @@
         const endChatBtn = document.getElementById('end-chat-btn');
         const feedbackContainer = document.getElementById('feedback-container');
         let conversationHistory = [];
+
+        // Add event listener for textarea key events
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                // If Shift key is not pressed and Enter is pressed
+                if (!e.shiftKey) {
+                    e.preventDefault(); // Prevent default Enter behavior
+                    const message = userInput.value.trim();
+                    if (message) {
+                        chatForm.dispatchEvent(new Event('submit'));
+                    }
+                }
+            }
+        });
 
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -308,12 +417,10 @@
                 role: msg.classList.contains('user-message') ? 'user' : 'assistant',
                 content: msg.textContent.trim()
             }));
-            
-            // Show loading message
-            document.querySelector('.loading-message').style.display = 'block';
+            // Show modal loading message
+            document.getElementById('loading-modal').classList.add('active');
             document.querySelector('.feedback-content').style.display = 'none';
             document.getElementById('feedback-container').style.display = 'block';
-            
             fetch('/end-chat', {
                 method: 'POST',
                 headers: {
@@ -323,8 +430,8 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Hide loading message and show feedback
-                document.querySelector('.loading-message').style.display = 'none';
+                // Hide modal loading message and show feedback
+                document.getElementById('loading-modal').classList.remove('active');
                 document.querySelector('.feedback-content').style.display = 'block';
                 
                 // Update scores and feedback
@@ -434,16 +541,12 @@
             // Clear chat messages
             chatMessages.innerHTML = '';
             conversationHistory = [];
-            
             // Hide feedback container
             feedbackContainer.style.display = 'none';
-            
             // Show chat container
             document.querySelector('.chat-container').style.display = 'flex';
-            
             // Clear input
             userInput.value = '';
-            
             // Refresh the page to get a new persona
             window.location.reload();
         });
